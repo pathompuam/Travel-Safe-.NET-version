@@ -1,0 +1,35 @@
+﻿@model Travel_Safe.Models.ApplicationUser
+
+@{
+    ViewBag.Title = "Edit User";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit User</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.UserName)
+        @Html.EditorFor(model => model.UserName)
+        @Html.ValidationMessageFor(model => model.UserName)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Email)
+        @Html.EditorFor(model => model.Email)
+        @Html.ValidationMessageFor(model => model.Email)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.PhoneNumber)
+        @Html.EditorFor(model => model.PhoneNumber)
+        @Html.ValidationMessageFor(model => model.PhoneNumber)
+    </div>
+
+    <!-- เพิ่มฟิลด์ที่ต้องการให้ผู้ใช้แก้ไข เช่น role, status เป็นต้น -->
+
+    <button type="submit" class="btn btn-primary">Save</button>
+}

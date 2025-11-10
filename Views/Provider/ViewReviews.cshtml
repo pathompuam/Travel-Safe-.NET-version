@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Travel_Safe.Models.Review>
+
+@{
+    ViewBag.Title = "รายชื่อรีวิวทั้งหมด";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>รายชื่อรีวิวทั้งหมด</h2>
+
+<!-- ค้นหาข้อมูล -->
+<form method="get" action="@Url.Action("ViewReviews", "Provider")">
+    <div class="form-group">
+        <input type="text" name="search" class="form-control" placeholder="ค้นหารีวิว..." />
+    </div>
+    <button type="submit" class="btn btn-primary">ค้นหา</button>
+</form>
+
+<!-- แสดงรายการรีวิว -->
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ชื่อรีวิว</th>
+                <th>ผู้เขียน</th>
+                <th>วันที่สร้าง</th>
+                <th>คะแนน</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var review in Model)
+            {
+                <tr>
+                    <td>@review.Title</td>
+                    <td>@review.UserName</td>
+                    <td>@review.CreatedDate.ToString("dd/MM/yyyy")</td>
+                    <td>@review.Rating</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>ไม่พบรีวิวที่เกี่ยวข้องกับสถานที่ที่คุณสร้างขึ้น</p>
+}

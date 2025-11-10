@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNet.Identity
+@model IEnumerable<Travel_Safe.Models.Location>
+
+@{
+    ViewBag.Title = "ProviderDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-center">Locations Managed</h2>
+
+<div class="row">
+    @foreach (var location in Model)
+    {
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        @Html.ActionLink(location.Name, "LocationDetail", "Admin", new { id = location.LocationId }, null)
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <p><strong>Description:</strong> @location.Description</p>
+                    <p><strong>Address:</strong> @location.Address</p>
+                    <p><strong>Opening Hours:</strong> @location.OpeningHours</p>
+                    <p><strong>Contact:</strong> @location.Contact</p>
+                </div>
+                @if (User.Identity.GetUserId() == location.CreatorId || User.IsInRole("Admin"))
+                {
+                    <div class="panel-footer text-right">
+                        <a href="@Url.Action("EditLocation", "Admin", new { id = location.LocationId })" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="@Url.Action("DeleteLocation", "Admin", new { id = location.LocationId })" class="btn btn-danger btn-sm">Delete</a>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,23 @@
+﻿@model Travel_Safe.Models.Article
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .center-img {
+        display: block;
+        margin: 0 auto;
+        height: 500px;
+    }
+</style>
+
+<div class="container">
+    <h1>@Model.Title</h1>
+    <img src="@Url.Content(Model.ImagePath ?? "~/Content/Images/place_pics/default.png")" alt="@Model.Title" class="img-responsive center-img" />
+    <h1>@Model.Title</h1>
+    <p>@Html.Raw(Model.Content)</p>
+    <p><strong>เขียนโดย:</strong> @Model.CreatedBy</p>
+    <p><strong>วันที่สร้าง:</strong> @(Model.CreatedAt.HasValue ? Model.CreatedAt.Value.ToString("dd MMM yyyy HH:mm") : "N/A")</p>
+</div>

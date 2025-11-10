@@ -1,0 +1,76 @@
+﻿@model Travel_Safe.Models.Location
+
+@{
+    ViewBag.Title = "Edit Location";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br>
+<br>
+<br>
+
+<div class="container">
+    <h2 class="text-center">แก้ไขข้อมูลสถานที่</h2>
+    <hr>
+
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.LocationId) <!-- Hidden field for LocationId -->
+
+        <!-- Name -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-10">
+                @Html.TextAreaFor(model => model.Description, new { @class = "form-control", rows = 6, style = "resize: vertical; min-height: 150px;" })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Address -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.Address, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Opening Hours -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.OpeningHours, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.OpeningHours, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.OpeningHours, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Contact -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.Contact, new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.Contact, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Contact, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary" style="background-color: #829d80; color: white;">
+                    <span class="glyphicon glyphicon-save"></span> Save
+                </button>
+                @Html.ActionLink("Cancel", "ProviderDetails", new { id = Model.CreatorId }, new { @class = "btn btn-default" })
+            </div>
+        </div>
+    }
+</div>

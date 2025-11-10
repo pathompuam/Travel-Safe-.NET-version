@@ -1,0 +1,61 @@
+﻿@model List<Travel_Safe.Models.Review>
+
+@{
+    ViewBag.Title = "รีวิวทั้งหมด";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br>
+<br>
+<br>
+
+<div class="container">
+    <h2 class="text-center">รีวิวทั้งหมดสำหรับสถานที่: @ViewBag.LocationName</h2>
+    <br>
+    <br>
+
+
+    @if (Model.Any())
+    {
+        <div class="list-group">
+            @foreach (var review in Model)
+            {
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        <a href="@Url.Action("ReviewDetails", "Review", new { id = review.ReviewId })">
+                            <strong>@review.Title</strong>
+                        </a>
+                    </h4>
+                    <p class="list-group-item-text">
+                        @review.Content.Substring(0, Math.Min(review.Content.Length, 100))...
+                    </p>
+                    <p>
+                        <small>
+                            คะแนน:
+                            @for (int i = 0; i < 5; i++)
+                            {
+                                if (i < review.Rating)
+                                {
+                                    <i class="fas fa-star" style="color: yellow;"></i> <!-- ดาวสีเหลือง -->
+                                }
+                                else
+                                {
+                                    <i class="fas fa-star" style="color: grey;"></i> <!-- ดาวสีเทา -->
+                                }
+                            }
+                        </small>
+                    </p>
+                    <p>
+                        <small>
+                            เขียนโดย: @review.UserName เมื่อ @review.CreatedDate.ToString("dd/MM/yyyy")
+                        </small>
+                    </p>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="alert alert-info text-center">ยังไม่มีรีวิวสำหรับสถานที่นี้</p>
+    }
+</div>

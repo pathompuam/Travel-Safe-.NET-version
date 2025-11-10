@@ -1,0 +1,33 @@
+﻿@model IEnumerable<Travel_Safe.Models.Article>
+
+@{
+    ViewBag.Title = "ดูบทความ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h2 class="text-center">บทความทั้งหมด</h2>
+
+    @foreach (var article in Model)
+    {
+        <div class="article well">
+            <h3>@article.Title</h3>
+            <br>
+            @if (!string.IsNullOrEmpty(article.ImagePath))
+            {
+                <img src="@Url.Content(article.ImagePath)" alt="Image" class="img-responsive" style="width: 100%; max-width: 600px; height: auto;" />
+            }
+            <br>
+            <p>@article.Content</p>
+            <p><strong>เขียนโดย:</strong> @article.CreatedBy</p>
+            <p><strong>วันที่:</strong> @(article.CreatedAt.HasValue ? article.CreatedAt.Value.ToString("dd/MM/yyyy") : "ไม่ทราบ")</p>
+
+            <!-- Delete Button -->
+            <form action="@Url.Action("Delete", "Article", new { id = article.ArticleId })" method="post" onsubmit="return confirm('คุณต้องการลบบทความนี้หรือไม่?');">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-danger">ลบบทความ</button>
+            </form>
+        </div>
+        <hr />
+    }
+</div>

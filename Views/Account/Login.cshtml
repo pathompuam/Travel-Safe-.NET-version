@@ -1,0 +1,77 @@
+﻿@using Travel_Safe.Models
+@model LoginViewModel
+@{
+    ViewBag.Title = "Travel Safe";
+}
+
+<br>
+<br>
+<br>
+<br>
+
+
+<h2 class="text-center" style="color: #829d80;">@ViewBag.Title</h2>
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <section id="loginForm" class="panel panel-default" style="border-color: #829d80;">
+            <div class="panel-heading text-center" style="background-color: #829d80; color: white;">
+                <h4>ล็อกอิน</h4>
+            </div>
+            <div class="panel-body" style="margin-left: -20px;">
+                @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    <!-- Email-->
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Email, new { @class = "col-md-3 control-label" })
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "ใส่อีเมล" })
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <!-- Password-->
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Password, new { @class = "col-md-3 control-label" })
+                        <div class="col-md-9">
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "ใส่รหัส" })
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <!-- Remember Me -->
+                    <div class="form-group">
+                        <div class="col-md-offset-3 col-md-9">
+                            <div class="checkbox">
+                                @Html.CheckBoxFor(m => m.RememberMe)
+                                @Html.LabelFor(m => m.RememberMe, new { style = "display: inline;" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Login Button -->
+                    <div class="form-group">
+                        <div class="col-md-offset-3 col-md-9" style="margin-left: 75px;">
+                            <input type="submit" value="Log in" class="btn btn-success btn-block" style="background-color: #829d80; border-color: #829d80;" />
+                        </div>
+                    </div>
+
+                    <!-- Register and Forgot Password Links -->
+                    <div class="text-center">
+                        <p>
+                            @Html.ActionLink("สมัครผู้ใช้ใหม่ที่นี้", "Register", null, new { style = "color: #829d80;" })
+                        </p>
+
+
+                    </div>
+                }
+            </div>
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,135 @@
+﻿@using Microsoft.AspNet.Identity
+@model Travel_Safe.Models.Review
+
+<br>
+<br>
+<br>
+<br>
+
+<div class="review-container">
+    <div class="review-header">
+        <h1>@Model.Title - @Model.Location.Name</h1>
+        <small>
+            คะแนน:
+            @for (int i = 0; i < 5; i++)
+            {
+                if (i < @Model.Rating)
+                {
+                    <i class="fas fa-star" style="color: yellow;"></i> <!-- ดาวสีเหลือง -->
+                }
+                else
+                {
+                    <i class="fas fa-star" style="color: grey;"></i> <!-- ดาวสีเทา -->
+                }
+            }
+        </small>
+        <p class="review-author">รีวิวโดย @Model.UserName</p>
+        <p class="review-date">วันที่: @Model.CreatedDate.ToString("dd/MM/yyyy")</p>
+    </div>
+
+    <div class="review-image">
+        <img src="@Url.Content(Model.ReviewImages?.FirstOrDefault()?.ImageUrl ?? "~/Content/Images/place_pics/default.png")" alt="ภาพสถานที่" class="img-responsive">
+    </div>
+
+    <div class="review-content">
+        <h3><b>@Model.Title</b></h3>
+        <p>@Model.Content</p>
+    </div>
+
+    <div class="review-safety">
+        <h3><b>ความปลอดภัย</b></h3>
+        <ul>
+            <li><strong>ความปลอดภัยด้านอาชญากรรม:</strong> @Model.SafetyType</li>
+            <li><strong>ความปลอดภัยด้านสภาพแวดล้อม:</strong> @Model.SafetyType</li>
+            <li><strong>ความปลอดภัยด้านสุขภาพ:</strong> @Model.SafetyType</li>
+        </ul>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.AdditionalTips))
+    {
+        <div class="review-tips">
+            <h3><b>คำแนะนำเพิ่มเติม</b></h3>
+            <p>@Model.AdditionalTips</p>
+        </div>
+    }
+
+    <p><strong>เขียนเมื่อ:</strong> @Model.CreatedDate.ToString("dd/MM/yyyy")</p>
+    <p><strong>โดย:</strong> @Model.UserName</p>
+
+
+    <div>
+        <a href="@Url.Action("EditReview", "Admin", new { id = Model.ReviewId })" class="btn btn-warning">แก้ไข</a>
+        @using (Html.BeginForm("DeleteReview", "Admin", new { id = Model.ReviewId }, FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-danger" style="margin-top: 10px" onclick="return confirm('คุณต้องการลบรีวิวนี้หรือไม่?');">ลบ</button>
+        }
+    </div>
+</div>
+
+<style>
+    .review-container {
+        width: 60%;
+        margin: 0 auto;
+        font-family: Arial, sans-serif;
+    }
+
+    .review-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+        .review-header h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+
+    .review-author, .review-date {
+        font-size: 14px;
+        color: gray;
+    }
+
+    .review-image {
+        text-align: center;
+        margin-bottom: 20px;
+        justify-content: center;
+    }
+
+        .review-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            display: block;
+            margin: 0 auto;
+        }
+
+    .review-content, .review-safety, .review-tips {
+        margin-bottom: 20px;
+    }
+
+        .review-content h3, .review-safety h3, .review-tips h3 {
+            font-size: 18px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        .review-safety ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+            .review-safety ul li {
+                margin-bottom: 10px;
+                font-size: 14px;
+            }
+
+                .review-safety ul li i {
+                    margin-right: 10px;
+                    color: green;
+                }
+
+    .rating {
+        color: gold;
+        font-size: 18px;
+    }
+</style>

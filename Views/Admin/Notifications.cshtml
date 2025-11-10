@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Travel_Safe.Models.ReviewReport>
+
+@{
+    ViewBag.Title = "Notifications";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>การแจ้งเตือน</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>รายละเอียดการแจ้งเตือน</th>
+            <th>วันที่แจ้ง</th>
+            <th>จัดการ</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Description</td>
+                <td>@item.ReportDate.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>
+                    <a href="@Url.Action("ReviewDetail", "Admin", new { id = item.ReviewId })" class="btn btn-primary">ดูรีวิว</a>
+                    @using (Html.BeginForm("DeleteNotification", "Admin", new { id = item.Id }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('คุณต้องการลบการแจ้งเตือนนี้หรือไม่?');">
+                            ลบ
+                        </button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

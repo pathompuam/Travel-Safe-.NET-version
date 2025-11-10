@@ -1,0 +1,112 @@
+﻿@model Travel_Safe.Models.Location
+
+@{
+    ViewBag.Title = "Create Location";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br>
+<br>
+<br>
+
+<div class="container">
+    <h2 class="text-center">สร้างสถานที่ใหม่ (ครั้งเดียว)</h2>
+
+    @using (Html.BeginForm("Create", "Provider", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <h4>รายละเอียดสถานที่</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+    <!-- Name -->
+    <div class="form-group">
+        <label class="control-label col-md-2"> ชื่อสถานที่ของคุณ </label>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <!-- Location Type -->
+    <div class="form-group">
+        <label class="control-label col-md-2"> ประเภทของสถานที่ </label>
+        <div class="col-md-10">
+            @Html.DropDownListFor(
+                model => model.LocationType,
+                ViewBag.LocationTypes as SelectList,
+                "กรุณาเลือก",
+                new { @class = "form-control" }
+            )
+            @Html.ValidationMessageFor(model => model.LocationType, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <!-- Address -->
+    <div class="form-group">
+        <label class="control-label col-md-2"> ที่อยู่ของสถานที่ </label>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <!-- Opening Hours -->
+    <div class="form-group">
+        <label class="control-label col-md-2"> เวลา เปิด - ปิด </label>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.OpeningHours, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.OpeningHours, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <!-- Entry Fee -->
+    <div class="form-group">
+        <label class="control-label col-md-2"> ค่าเข้าสถานที่ </label>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.EntryFee, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.EntryFee, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <!-- Contact -->
+    <div class="form-group">
+        <label class="control-label col-md-2"> ช่องทางการติดต่อตัวแทนสถานที่ </label>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Contact, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Contact, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <!-- Description -->
+    <div class="form-group">
+        <label class="control-label col-md-2"> อธิบายเกี่ยวกับสถานที่ (ประวัติความเป็นมา/อธิบายว่าสถานที่เกี่ยวกับอะไร) </label>
+        <div class="col-md-10">
+            @Html.TextAreaFor(model => model.Description, new { @class = "form-control", rows = 5 })
+            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <!-- Image Upload -->
+    <div class="form-group">
+        <label class="control-label col-md-2"> อัพโหลดรูปภาพ (ไม่เกิน 7 ภาพ) </label>
+        <div class="col-md-10">
+            <input type="file" name="Images" class="form-control" multiple />
+            @Html.ValidationMessageFor(model => model.ImageUrls, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn" style="background-color: #829d80; color: white;">
+                Create
+            </button>
+
+        </div>
+    </div>
+</div>
+    }
+</div>

@@ -1,0 +1,56 @@
+﻿@model Travel_Safe.Models.Review
+
+@{
+    ViewBag.Title = "รายละเอียดรีวิว";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>รีวิว: @Model.Title</h2>
+
+@foreach (var image in Model.ReviewImages)
+{
+    <li><img src="@Url.Content(image.ImageUrl)" width="100" /></li>
+}
+
+<p><strong>สถานที่:</strong> @Model.Location.Name</p>
+<p><strong>เนื้อหารีวิว:</strong> @Model.Content</p>
+<p><strong>ประเภทความปลอดภัย1:</strong> @Model.SafetyType</p>
+<p><strong>ประเภทความปลอดภัย2:</strong> @Model.SafetyType</p>
+<p><strong>ประเภทความปลอดภัย3:</strong> @Model.SafetyType</p>
+@if (!string.IsNullOrEmpty(Model.AdditionalTips))
+{
+    <p><strong>คำแนะนำเพิ่มเติม:</strong> @Model.AdditionalTips</p>
+}
+<p><strong>เขียนเมื่อ:</strong> @Model.CreatedDate.ToString("dd/MM/yyyy")</p>
+<p><strong>โดย:</strong> @Model.UserName</p>
+
+
+<a href="@Url.Action("Details", "Location", new { id = Model.LocationId })" class="btn btn-primary">กลับไปหน้ารายละเอียดสถานที่</a>
+
+<!-- ปุ่มรายงานรีวิว -->
+<button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#reportReviewModal">รายงานรีวิว</button>
+
+<!-- Modal Pop-up สำหรับรายงานรีวิว -->
+<div class="modal fade" id="reportReviewModal" tabindex="-1" aria-labelledby="reportReviewLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportReviewLabel">รายงานปัญหาในรีวิว</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="@Url.Action("ReportReview", "Review")">
+                <div class="modal-body">
+                    <input type="hidden" name="reviewId" value="@Model.ReviewId" />
+                    <div class="mb-3">
+                        <label for="issueDescription" class="form-label">ระบุปัญหาในรีวิว</label>
+                        <textarea class="form-control" id="issueDescription" name="description" rows="4" placeholder="กรุณากรอกเหตุผลหรือปัญหาในรีวิว"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                    <button type="submit" class="btn btn-danger">ส่งรายงาน</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

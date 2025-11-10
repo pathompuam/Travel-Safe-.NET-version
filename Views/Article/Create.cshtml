@@ -1,0 +1,58 @@
+﻿@model Travel_Safe.Models.Article
+
+@{
+    ViewBag.Title = "เขียนบทความ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br>
+<br>
+<br>
+
+<div class="container">
+    <h2 class="text-center">เขียนบทความ</h2>
+    <br>
+    <br>
+    @using (Html.BeginForm("Create", "Article", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <!-- Title -->
+            <div class="form-group">
+                <label class="control-label col-md-2"> หัวข้อ </label>
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.Title, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="form-group">
+                <label class="control-label col-md-2"> เนื้อ </label>
+                <div class="col-md-10">
+                    @Html.TextAreaFor(model => model.Content, new { @class = "form-control", rows = 5 })
+                    @Html.ValidationMessageFor(model => model.Content, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <!-- Image Upload -->
+            <div class="form-group">
+                <label for="image" class="control-label col-md-2">ภาพประกอบ</label>
+                <div class="col-md-10">
+                    <input type="file" name="image" id="image" class="form-control" />
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <button type="submit" class="btn" style="background-color: #829d80; color: white;">
+                        บันทึก
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    }
+</div>

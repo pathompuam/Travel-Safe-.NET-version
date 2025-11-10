@@ -1,0 +1,175 @@
+﻿@model Travel_Safe.Models.Review
+
+@{
+    ViewBag.Title = "รายละเอียดรีวิว";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br>
+<br>
+<br>
+<br>
+
+<div class="review-container">
+    <div class="review-header">
+        <h1>@Model.Title - @Model.Location.Name</h1>
+        <small>
+            คะแนน:
+            @for (int i = 0; i < 5; i++)
+            {
+                if (i < @Model.Rating)
+                {
+                    <i class="fas fa-star" style="color: yellow;"></i> <!-- ดาวสีเหลือง -->
+                }
+                else
+                {
+                    <i class="fas fa-star" style="color: grey;"></i> <!-- ดาวสีเทา -->
+                }
+            }
+        </small>
+        <p class="review-author">รีวิวโดย @Model.UserName</p>
+        <p class="review-date">วันที่: @Model.CreatedDate.ToString("dd/MM/yyyy")</p>
+    </div>
+
+    <div class="review-image">
+        <img src="@Url.Content(Model.ReviewImages?.FirstOrDefault()?.ImageUrl ?? "~/Content/Images/place_pics/default.png")" alt="ภาพสถานที่" class="img-responsive">
+    </div>
+    <div class="review-content">
+        <h3><b>@Model.Title</b></h3>
+        <p>@Model.Content</p>
+    </div>
+
+    <div class="review-safety">
+        <h3><b>ความปลอดภัย</b></h3>
+        <ul>
+            <li><strong>ความปลอดภัยด้านอาชญากรรม:</strong> @Model.SafetyType</li>
+            <li><strong>ความปลอดภัยด้านสภาพแวดล้อม:</strong> @Model.SafetyType</li>
+            <li><strong>ความปลอดภัยด้านสุขภาพ:</strong> @Model.SafetyType</li>
+        </ul>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.AdditionalTips))
+    {
+        <div class="review-tips">
+            <h3><b>คำแนะนำเพิ่มเติม</b></h3>
+            <p>@Model.AdditionalTips</p>
+        </div>
+    }
+
+    <p><strong>เขียนเมื่อ:</strong> @Model.CreatedDate.ToString("dd/MM/yyyy")</p>
+    <p><strong>โดย:</strong> @Model.UserName</p>
+
+    <br>
+
+    <!-- ปุ่มรายงาน -->
+    @if (User.Identity.IsAuthenticated)
+    {
+        <button class="btn btn-danger" data-toggle="modal" data-target="#reportReviewModal">รายงานรีวิว</button>
+    }
+    else
+    {
+        <p class="text-danger">
+            กรุณา <a href="@Url.Action("Login", "Account")">เข้าสู่ระบบ</a> ก่อนเพื่อรายงาน
+        </p>
+    }
+
+    <!-- Modal -->
+    <div class="modal fade" id="reportReviewModal" tabindex="-1" role="dialog" aria-labelledby="reportReviewLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="reportReviewLabel">รายงานปัญหาในรีวิว</h4>
+                </div>
+                <form method="post" action="@Url.Action("ReportReview", "Review")">
+                    <div class="modal-body">
+                        <input type="hidden" name="reviewId" value="@Model.ReviewId" />
+                        <div class="form-group">
+                            <label for="issueDescription" class="control-label">ระบุปัญหาในรีวิว:</label>
+                            <textarea class="form-control" id="issueDescription" name="description" rows="4" placeholder="กรุณากรอกเหตุผลหรือปัญหาในรีวิว"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
+                        <button type="submit" class="btn btn-danger">ส่งรายงาน</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .review-container {
+        width: 60%;
+        margin: 0 auto;
+        font-family: Arial, sans-serif;
+        background-color: #f0faf0;
+        padding: 50px;
+        border-radius: 20px;
+    }
+
+    .review-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+        .review-header h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+
+    .review-author, .review-date {
+        font-size: 14px;
+        color: gray;
+    }
+
+    .review-image {
+        text-align: center;
+        margin-bottom: 20px;
+        justify-content:center;
+    }
+
+        .review-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            display: block;
+            margin: 0 auto;
+        }
+
+    .review-content, .review-safety, .review-tips {
+        margin-bottom: 20px;
+    }
+
+        .review-content h3, .review-safety h3, .review-tips h3 {
+            font-size: 18px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        .review-safety ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+            .review-safety ul li {
+                margin-bottom: 10px;
+                font-size: 14px;
+            }
+
+                .review-safety ul li i {
+                    margin-right: 10px;
+                    color: green;
+                }
+
+    .rating {
+        color: gold;
+        font-size: 18px;
+    }
+
+
+</style>

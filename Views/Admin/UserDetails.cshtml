@@ -1,0 +1,33 @@
+﻿@using Microsoft.AspNet.Identity
+@model IEnumerable<Travel_Safe.Models.Review>
+
+@{
+    ViewBag.Title = "ProviderDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-center">Reviews</h2>
+
+@foreach (var review in Model)
+{
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                @Html.ActionLink(review.Title, "ReviewDetail", "Admin", new { id = review.ReviewId }, null)
+            </h3>
+        </div>
+        <div class="panel-body">
+            <p>@review.Content</p>
+            <p><strong>Created Date:</strong> @review.CreatedDate.ToString("dd/MM/yyyy")</p>
+            <p><strong>Current UserId:</strong> @User.Identity.GetUserId()</p>
+            <p><strong>Review UserId:</strong> @review.UserId</p>
+        </div>
+        @if (User.Identity.GetUserId() == review.UserId || User.IsInRole("Admin"))
+        {
+            <div class="panel-footer">
+                <a href="@Url.Action("EditReview", "Admin", new { id = review.ReviewId })" class="btn btn-warning btn-sm">Edit</a>
+                <a href="@Url.Action("DeleteReview", "Admin", new { id = review.ReviewId })" class="btn btn-danger btn-sm">Delete</a>
+            </div>
+        }
+    </div>
+}

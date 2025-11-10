@@ -1,0 +1,277 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Travel Safe</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const dropdownToggle = document.querySelector(".dropdown-toggle");
+            const userPopup = document.querySelector(".user-popup");
+
+            dropdownToggle.addEventListener("click", (event) => {
+                event.preventDefault();
+                userPopup.classList.toggle("show");
+            });
+
+            document.addEventListener("click", (event) => {
+                if (!event.target.closest(".dropdown")) {
+                    userPopup.classList.remove("show");
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            // ใช้งาน select2 กับ DropdownList
+            $('#LocationId').select2({
+                placeholder: "Select a Location",
+                allowClear: true
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Travel Safe", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+
+                <!-- เปลี่ยน UI ตาม Role ของผู้ใช้ -->
+                @if (User.Identity.IsAuthenticated)
+                {
+                    if (User.IsInRole("User"))
+                    {
+                        <!-- สำหรับ User -->
+                        <form class="navbar-form navbar-left" role="search" method="get" action="@Url.Action("Search", "User")">
+                            <div class="form-group">
+                                <select name="category" class="form-control" aria-label="หมวดหมู่">
+                                    <option value="">หมวดหมู่</option>
+                                    <option value="ธรรมชาติ">ธรรมชาติ</option>
+                                    <option value="วัฒนธรรมและประวัติศาสตร์">วัฒนธรรมและประวัติศาสตร์</option>
+                                    <option value="พักผ่อนและบันเทิง">พักผ่อนและบันเทิง</option>
+                                    <option value="เชิงเกษตร">เชิงเกษตร</option>
+                                    <option value="เชิงสุขภาพ">เชิงสุขภาพ</option>
+                                    <option value="ผจญภัยและกิจกรรมกลางแจ้ง">ผจญภัยและกิจกรรมกลางแจ้ง</option>
+                                    <option value="เชิงวิทยาศาสตร์และการศึกษา">เชิงวิทยาศาสตร์และการศึกษา</option>
+                                    <option value="อื่น ๆ">อื่น ๆ</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="query" class="form-control" placeholder="ค้นหา" />
+                            </div>
+                            <button type="submit" class="btn btn-default">🔍</button>
+                        </form>
+
+                        <ul class="nav navbar-nav navbar-right">
+                            <!-- เมนูสำหรับ User -->
+                            <li><a href="~/Home/Index">หน้าแรก</a></li>
+                            <li><a href="~/User/CreateReview">เขียนรีวิว</a></li>
+                            <li><a href="~/User/UserReviews">รีวิวของฉัน</a></li>
+
+
+
+                            <!-- เมนูแสดงชื่อผู้ใช้พร้อม Pop-up -->
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Hello, @User.Identity.Name</a>
+                                <div class="user-popup dropdown-menu">
+                                    <div class="user-profile" style="">
+                                        <img src="~/Content/images/profiles/common.png" alt="Profile" class="profile-image" />
+                                        <h4 style="color: white;">@User.Identity.Name</h4>
+                                    </div>
+                                    <div class="user-actions">
+                                        @if (User.IsInRole("User"))
+                                        {
+
+                                            <button class="btn btn-outline-secondary" type="button" onclick="window.location.href='@Url.Action("Manage", "User")'">
+                                                จัดการผู้ใช้
+                                            </button>
+                                            <button class="btn btn-outline-secondary" type="button" onclick="window.location.href='FavoritesAndWishlists'">สถานที่ชื่นชอบ/อยากไป</button>
+                                        }
+                                        else if (User.IsInRole("Provider"))
+                                        {
+                                            <button class="btn btn-outline-secondary">จัดการผู้ใช้</button>
+                                            <button class="btn btn-outline-secondary">การแจ้งเตือน</button>
+                                        }
+                                        else if (User.IsInRole("Admin"))
+                                        {
+                                            <button class="btn btn-outline-secondary">การแจ้งเตือน</button>
+                                            <button class="btn btn-outline-secondary">Dashboard</button>
+                                        }
+                                        <form action="@Url.Action("LogOff", "Account")" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <button class="btn" style="background-color: #ffdddd; color: #d9534f;">ออกจากระบบ</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </li>
+
+
+                        </ul>
+                    }
+                    else if (User.IsInRole("Provider"))
+                    {
+                        <!-- สำหรับ Provider -->
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="~/Home/Index">หน้าแรก</a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Hello, @User.Identity.Name</a>
+                                <div class="user-popup dropdown-menu">
+                                    <div class="user-profile" style="">
+                                        <img src="~/Content/images/profiles/common.png" alt="Profile" class="profile-image" />
+                                        <h4 style="color: white;">@User.Identity.Name</h4>
+                                    </div>
+                                    <div class="user-actions">
+                                        @if (User.IsInRole("User"))
+                                        {
+                                            <button class="btn btn-outline-secondary">จัดการผู้ใช้</button>
+                                            <button class="btn btn-outline-secondary" type="button" onclick="window.location.href='FavoritesAndWishlists'">สถานที่ชื่นชอบ/อยากไป</button>
+                                        }
+                                        else if (User.IsInRole("Provider"))
+                                        {
+                                            <button class="btn btn-outline-secondary" type="button" onclick="window.location.href='@Url.Action("Manage", "User")'">
+                                                จัดการผู้ใช้
+                                            </button>
+
+                                        }
+                                        else if (User.IsInRole("Admin"))
+                                        {
+                                            <button class="btn btn-outline-secondary">การแจ้งเตือน</button>
+                                            <button class="btn btn-outline-secondary">Dashboard</button>
+                                        }
+                                        <form action="@Url.Action("LogOff", "Account")" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <button class="btn" style="background-color: #ffdddd; color: #d9534f;">ออกจากระบบ</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    }
+                    else if (User.IsInRole("Admin"))
+                    {
+                        <!-- สำหรับ Admin -->
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="~/Article/Create">เขียนบทความ</a></li>
+                            <li><a href="~/Article">ดูบทความ</a></li>
+                            <li><a href="~/Admin/AdminIndex">จัดการผู้ใช้</a></li>
+                            <li><a href="@Url.Action("ManageReviews", "Admin")">จัดการรีวิว</a></li>
+                            <li><a href="@Url.Action("ManagePlaces", "Admin")">จัดการสถานที่</a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Hello, @User.Identity.Name</a>
+                                <div class="user-popup dropdown-menu">
+                                    <div class="user-profile" style="">
+                                        <img src="~/Content/images/profiles/common.png" alt="Profile" class="profile-image" />
+                                        <h4 style="color: white;">@User.Identity.Name</h4>
+                                    </div>
+                                    <div class="user-actions">
+                                        @if (User.IsInRole("User"))
+                                        {
+                                            <button class="btn btn-outline-secondary">จัดการผู้ใช้</button>
+                                            <button class="btn btn-outline-secondary" type="button" onclick="window.location.href='FavoritesAndWishlists'">สถานที่ชื่นชอบ/อยากไป</button>
+                                        }
+                                        else if (User.IsInRole("Provider"))
+                                        {
+                                            <button class="btn btn-outline-secondary">จัดการผู้ใช้</button>
+                                            <button class="btn btn-outline-secondary">การแจ้งเตือน</button>
+                                        }
+                                        else if (User.IsInRole("Admin"))
+                                        {
+                                            <button class="btn btn-outline-secondary" onclick="window.location.href='@Url.Action("Notifications", "Admin")'">
+                                                การแจ้งเตือน
+                                            </button>
+                                            <button class="btn btn-outline-secondary" onclick="window.location.href='@Url.Action("Dashboard", "Admin")'">
+                                                Dashboard
+                                            </button>
+                                        }
+                                        <form action="@Url.Action("LogOff", "Account")" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <button class="btn" style="background-color: #ffdddd; color: #d9534f;">ออกจากระบบ</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    }
+                }
+                else
+                {
+                    <!-- ถ้ายังไม่ได้ล็อกอิน -->
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="~/Home/Index" class="btn btn-outline-primary">หน้าแรก</a></li>
+                        <li><a href="~/Account/Login" class="btn btn-success">Sign Up / Login</a></li>
+                    </ul>
+                    <!-- แสดงแถบค้นหา -->
+                    <form class="navbar-form navbar-left" role="search" method="get" action="@Url.Action("Search", "Home")">
+                        <div class="form-group">
+                            <select name="category" class="form-control" aria-label="หมวดหมู่">
+                                <option value="">หมวดหมู่</option>
+                                <option value="ธรรมชาติ">ธรรมชาติ</option>
+                                <option value="วัฒนธรรมและประวัติศาสตร์">วัฒนธรรมและประวัติศาสตร์</option>
+                                <option value="พักผ่อนและบันเทิง">พักผ่อนและบันเทิง</option>
+                                <option value="เชิงเกษตร">เชิงเกษตร</option>
+                                <option value="เชิงสุขภาพ">เชิงสุขภาพ</option>
+                                <option value="ผจญภัยและกิจกรรมกลางแจ้ง">ผจญภัยและกิจกรรมกลางแจ้ง</option>
+                                <option value="เชิงวิทยาศาสตร์และการศึกษา">เชิงวิทยาศาสตร์และการศึกษา</option>
+                                <option value="อื่น ๆ">อื่น ๆ</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="query" class="form-control" placeholder="ค้นหา" />
+                        </div>
+                        <button type="submit" class="btn btn-default">🔍</button>
+                    </form>
+                }
+
+            </div>
+        </div>
+    </div>
+
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Travel Safe</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+
+<style>
+    /* ลดความยาวของ select */
+    .navbar-form .form-group select {
+        width: 150px; /* ความกว้างของ select เล็กลง */
+    }
+
+    /* เพิ่มความยาวของ input */
+    .navbar-form .form-group input {
+        width: 250px; /* ความกว้างของ input เพิ่มขึ้น */
+    }
+
+    /* เปลี่ยนสีพื้นหลังของปุ่มและเพิ่มกรอบสีขาว */
+    .navbar-form .btn-default {
+        background-color: #779475; /* สีพื้นหลังของปุ่ม (เปลี่ยนสีตามต้องการ) */
+        color: white; /* สีของข้อความในปุ่ม */
+        border: 1px solid white; /* กรอบสีขาว */
+    }
+
+        /* เปลี่ยนสีพื้นหลังเมื่อ hover ปุ่ม */
+        .navbar-form .btn-default:hover {
+            background-color: #698567; /* สีพื้นหลังเมื่อ hover (สามารถเปลี่ยนได้) */
+            border-color: white; /* สีกรอบเมื่อ hover */
+        }
+</style>

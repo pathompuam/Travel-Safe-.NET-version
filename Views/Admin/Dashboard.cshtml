@@ -1,0 +1,285 @@
+﻿@using Travel_Safe.Models
+@model AdminDashboardViewModel
+
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br>
+<br>
+<br>
+
+<h2 class="page-header">Dashboard ของแอดมิน</h2>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Summary Cards -->
+        <div class="col-sm-2">
+            <div class="panel panel-success">
+                <div class="panel-heading text-center">
+                    <strong>จำนวนผู้ใช้ทั้งหมด</strong>
+                </div>
+                <div class="panel-body text-center">
+                    <h3>@Model.TotalUsers</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="panel panel panel-success">
+                <div class="panel-heading text-center">
+                    <strong>ผู้ให้บริการ</strong>
+                </div>
+                <div class="panel-body text-center">
+                    <h3>@Model.ProviderUsers</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="panel panel-success">
+                <div class="panel-heading text-center">
+                    <strong>นักท่องเที่ยว</strong>
+                </div>
+                <div class="panel-body text-center">
+                    <h3>@Model.NormalUsers</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="panel panel-success">
+                <div class="panel-heading text-center">
+                    <strong>สถานที่ทั้งหมด</strong>
+                </div>
+                <div class="panel-body text-center">
+                    <h3>@Model.TotalLocations</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="panel panel-success">
+                <div class="panel-heading text-center">
+                    <strong>รีวิวทั้งหมด</strong>
+                </div>
+                <div class="panel-body text-center">
+                    <h3>@Model.TotalReviews</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="panel panel-danger">
+                <div class="panel-heading text-center">
+                    <strong>รีวิวที่ถูกรายงาน</strong>
+                </div>
+                <div class="panel-body text-center">
+                    <h3>@Model.ReportedReviews</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Chart Section -->
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading text-center">
+                    <strong>Top 4 สถานที่ ที่คนรีวิวมากที่สุด</strong>
+                </div>
+                <div class="panel-body">
+                    <div id="mostReviewedChart" style="width: 100%; height: 300px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading text-center">
+                    <strong>สถานที่คะแนนเฉลี่ยเยอะที่สุด</strong>
+                </div>
+                <div class="panel-body">
+                    <div id="averageRatingChart" style="width: 100%; height: 300px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading text-center">
+                    <strong>สถานที่ ที่คนชอบมากที่สุด</strong>
+                </div>
+                <div class="panel-body">
+                    <div id="mostFavoritedChart" style="width: 100%; height: 300px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading text-center">
+                    <strong>สถานที่ ที่คนอยากไปมากที่สุด</strong>
+                </div>
+                <div class="panel-body">
+                    <div id="mostWishlistedChart" style="width: 100%; height: 300px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Top 5 Reviewers -->
+    <div class="col-md-8 col-lg-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Top 5 นักรีวิว</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>จำนวนรีวิว</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model.TopReviewers)
+                        {
+                            <tr>
+                                <td>@user.UserName</td>
+                                <td>@user.ReviewCount</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', { 'packages': ['corechart'] });
+
+    // Prepare data for Most Reviewed Chart
+    var mostReviewedData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(
+        Model.MostReviewedLocations.Select(loc => new { Location = loc.LocationName, Reviews = loc.Count })
+    ));
+
+    google.charts.setOnLoadCallback(drawMostReviewedChart);
+    function drawMostReviewedChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Location');
+        data.addColumn('number', 'Reviews');
+        mostReviewedData.forEach(function (row) {
+            data.addRow([row.Location, row.Reviews]);
+        });
+
+        var options = { title: 'สถานที่ ที่ถูกรีวิวมากที่สุด', pieHole: 0.4 };
+        var chart = new google.visualization.PieChart(document.getElementById('mostReviewedChart'));
+        chart.draw(data, options);
+    }
+
+    // Prepare data for Comparison Chart
+    var comparisonData = [
+        ['Month', 'Reviews', 'Favorites', 'Wishlists'],
+        ['January', 1000, 400, 200],
+        ['February', 1170, 460, 250],
+        ['March', 660, 1120, 300],
+        ['April', 1030, 540, 350]
+    ];
+
+    google.charts.setOnLoadCallback(drawComparisonChart);
+    function drawComparisonChart() {
+        var data = google.visualization.arrayToDataTable(comparisonData);
+
+        var options = {
+            title: 'สถิติการใช้งานรายเดือน',
+            hAxis: { title: 'Month', titleTextStyle: { color: '#333' } },
+            vAxis: { minValue: 0 },
+            chartArea: { width: '70%' }
+        };
+
+        var chart = new google.visualization.AreaChart(document.getElementById('comparisonChart'));
+        chart.draw(data, options);
+    }
+
+    // Prepare data for Most Favorited Chart
+    var mostFavoritedData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(
+        Model.MostFavoritedLocations.Select(loc => new { Location = loc.LocationName, Favorites = loc.Count })
+    ));
+
+    google.charts.setOnLoadCallback(drawMostFavoritedChart);
+    function drawMostFavoritedChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Location');
+        data.addColumn('number', 'Favorites');
+        mostFavoritedData.forEach(function (row) {
+            data.addRow([row.Location, row.Favorites]);
+        });
+
+        var options = {
+            title: 'สถานที่ ที่คนชอบมากที่สุด',
+            chartArea: { width: '70%' },
+            hAxis: {
+                title: 'Favorites',
+                minValue: 0
+            },
+            vAxis: {
+                title: 'Location'
+            }
+        };
+        var chart = new google.visualization.BarChart(document.getElementById('mostFavoritedChart'));
+        chart.draw(data, options);
+    }
+
+    // Prepare data for Most Wishlisted Chart
+    var mostWishlistedData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(
+        Model.MostWishlistedLocations.Select(loc => new { Location = loc.LocationName, Wishlists = loc.Count })
+    ));
+
+    google.charts.setOnLoadCallback(drawMostWishlistedChart);
+    function drawMostWishlistedChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Location');
+        data.addColumn('number', 'Wishlists');
+        mostWishlistedData.forEach(function (row) {
+            data.addRow([row.Location, row.Wishlists]);
+        });
+
+        var options = {
+            title: 'สถานที่ ที่คนอยากไปมากที่สุด',
+            chartArea: { width: '70%' },
+            hAxis: {
+                title: 'Wishlists',
+                minValue: 0
+            },
+            vAxis: {
+                title: 'Location'
+            }
+        };
+        var chart = new google.visualization.BarChart(document.getElementById('mostWishlistedChart'));
+        chart.draw(data, options);
+    }
+
+    google.charts.setOnLoadCallback(drawAverageRatingChart);
+
+var averageRatingsData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(
+    Model.AverageRatings.Select(ar => new { Location = ar.LocationName, Rating = ar.AverageRating })
+));
+
+function drawAverageRatingChart() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Location');
+    data.addColumn('number', 'เรทติ้งเฉลี่ย');
+    averageRatingsData.forEach(function (row) {
+        data.addRow([row.Location, row.Rating]);
+    });
+
+    var options = {
+        title: 'คะแนนเฉลี่ยรีวิวของแต่ละสถานที่',
+        hAxis: { title: 'สถานที่' },
+        vAxis: { title: 'คะแนนเฉลี่ย', minValue: 0, maxValue: 5 },
+        chartArea: { width: '70%' }
+    };
+
+    var chart = new google.visualization.ColumnChart(document.getElementById('averageRatingChart'));
+    chart.draw(data, options);
+}
+
+</script>

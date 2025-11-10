@@ -1,0 +1,61 @@
+﻿@using Travel_Safe.Models
+@model FavoritesAndWishlistsViewModel
+
+@{
+    ViewBag.Title = "FavoritesAndWishlists";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>สถานที่ชื่นชอบ/อยากไป</h2>
+
+<!-- ปุ่มสลับระหว่าง Favorites และ Wishlists -->
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link active" id="favorites-tab" data-toggle="tab" href="#favorites">สถานที่ชื่นชอบ</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="wishlists-tab" data-toggle="tab" href="#wishlists">สถานที่อยากไป</a>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <!-- สถานที่ชื่นชอบ -->
+    <div class="tab-pane active" id="favorites">
+        <ul>
+            @foreach (var item in Model.Favorites)
+            {
+                <li>
+                    <h4>@item.Location.Name</h4>
+                    <p>@item.Location.Description</p>
+                    <a href="@Url.Action("Details", "Location", new { id = item.LocationId })">ดูรายละเอียด</a>
+
+                    <!-- ปุ่มลบสำหรับสถานที่ชื่นชอบ -->
+                    <form method="post" action="@Url.Action("RemoveFavorite", "User")" style="display:inline;">
+                        <input type="hidden" name="locationId" value="@item.LocationId" />
+                        <button type="submit" class="btn btn-danger">ลบ</button>
+                    </form>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <!-- สถานที่อยากไป -->
+    <div class="tab-pane" id="wishlists">
+        <ul>
+            @foreach (var item in Model.Wishlists)
+            {
+                <li>
+                    <h4>@item.Location.Name</h4>
+                    <p>@item.Location.Description</p>
+                    <a href="@Url.Action("Details", "Location", new { id = item.LocationId })">ดูรายละเอียด</a>
+
+                    <!-- ปุ่มลบสำหรับสถานที่อยากไป -->
+                    <form method="post" action="@Url.Action("RemoveWishlist", "User")" style="display:inline;">
+                        <input type="hidden" name="locationId" value="@item.LocationId" />
+                        <button type="submit" class="btn btn-danger">ลบ</button>
+                    </form>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

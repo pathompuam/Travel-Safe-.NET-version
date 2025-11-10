@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Travel_Safe.Models.ApplicationUser>
+
+<div class="container">
+    <h2 class="text-center">จัดการผู้ใช้งาน</h2>
+
+    <!-- Search Form -->
+    <form method="get" class="form-inline text-center">
+        <div class="form-group">
+            <input type="text" name="search" placeholder="ค้นหาด้วยชื่อ" class="form-control" />
+        </div>
+        <div class="form-group">
+            <select name="roleFilter" class="form-control">
+                <option value="">ทุกประเภท</option>
+                <option value="User">User</option>
+                <option value="Provider">Provider</option>
+            </select>
+        </div>
+        <button type="submit" class="btn" style="background-color: #829d80; color: white;">ค้นหา</button>
+    </form>
+
+    <hr />
+
+    <!-- Users Table -->
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>@user.Email</td>
+                    <td>
+                        @foreach (var role in ViewBag.UserRoles[user.UserName]) // ใช้ ViewBag เพื่อดึงข้อมูล Role
+                        {
+                            <span class="label label-info" style="font-size: 13px;">@role</span>
+                        }
+                    </td>
+                    <td>
+                        <!-- Action Buttons in a single row, with equal button sizes -->
+                        <div class="btn-group">
+                            @if (ViewBag.UserRoles[user.UserName].Contains("Provider"))
+                            {
+                                <a href="@Url.Action("ProviderDetails", "Admin", new { id = user.Id })" class="btn btn-info btn-sm" style="margin-right: 10px">Details</a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("UserDetails", "Admin", new { id = user.Id })" class="btn btn-info btn-sm" style="margin-right: 10px">Details</a>
+                            }
+
+                            <a href="@Url.Action("Edit", "Admin", new { id = user.Id })" class="btn btn-warning btn-sm" style="margin-right: 10px">Edit</a>
+
+                            <!-- Delete button inside the btn-group with form submission -->
+                            <form action="@Url.Action("Delete", "Admin", new { id = user.Id })" method="post" style="display: inline;">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-danger btn-sm" style="margin-right: 10px" onclick="return confirm('Are you sure you want to delete this user?')">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+
+
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

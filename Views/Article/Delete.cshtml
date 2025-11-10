@@ -1,0 +1,22 @@
+﻿@model Travel_Safe.Models.Article
+
+@{
+    ViewBag.Title = "ลบบทความ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>ยืนยันการลบบทความ</h2>
+
+<p>คุณแน่ใจหรือไม่ว่าจะลบบทความนี้?</p>
+<div>
+    <h3>@Model.Title</h3>
+    <p>@Model.Content</p>
+    <p><strong>เขียนโดย:</strong> @Model.CreatedBy</p>
+    <p><strong>วันที่:</strong> @(Model.CreatedAt.HasValue ? Model.CreatedAt.Value.ToString("dd/MM/yyyy") : "ไม่ทราบ")</p>
+</div>
+
+<form action="@Url.Action("DeleteConfirmed", "Article", new { id = Model.ArticleId })" method="post">
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-danger">ลบบทความ</button>
+    <a href="@Url.Action("Index", "Article")" class="btn btn-secondary">ยกเลิก</a>
+</form>

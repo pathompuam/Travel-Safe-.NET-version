@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Travel_Safe.Models.Location>
+
+@{
+    ViewBag.Title = "Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>ผลการค้นหา</h2>
+
+@if (!Model.Any())
+{
+    <p>ไม่พบสถานที่ที่ตรงกับคำค้นหา</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ชื่อสถานที่</th>
+                <th>หมวดหมู่</th>
+                <th>คำอธิบาย</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var location in Model)
+            {
+            <tr>
+                <td>
+                    <!-- คลิกที่ชื่อสถานที่เพื่อไปที่รายละเอียด -->
+                    <a href="@Url.Action("Details", "Location", new { id = location.LocationId })">
+                        @location.Name
+                    </a>
+                </td>
+                <td>@location.LocationType</td>
+                <td>
+                    @location.Description.Substring(0, Math.Min(location.Description.Length, 100))...
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}

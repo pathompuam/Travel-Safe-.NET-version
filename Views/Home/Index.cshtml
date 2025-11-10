@@ -1,0 +1,126 @@
+﻿@model List<Travel_Safe.Models.Article>
+@using System.Linq
+
+
+@{
+    ViewBag.Title = "หน้าแรก - Travel Safe";
+}
+
+<br>
+<br>
+<br>
+
+<style>
+    /* สไลด์ */
+
+    #articleCarousel .carousel-inner {
+        max-height: 600px; /* กำหนดความสูงของสไลด์ */
+        overflow: hidden; /* ป้องกันไม่ให้เนื้อหาล้นออกมานอกพื้นที่ */
+    }
+
+        #articleCarousel .carousel-inner img {
+            width: 100%; /* ทำให้ภาพขยายเต็มความกว้างของสไลด์ */
+            height: 100%; /* ทำให้ภาพขยายเต็มความสูงของสไลด์ */
+            object-fit: cover; /* ให้ภาพถูกครอบให้เหมาะสมกับพื้นที่สไลด์ */
+        }
+</style>
+
+
+<div class="container">
+    <!-- Section 1: Slideshow -->
+    <div id="articleCarousel" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <li data-target="#articleCarousel" data-slide-to="@i" class="@((i == 0) ? "active" : "")"></li>
+            }
+        </ol>
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner">
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <div class="item @((i == 0) ? "active" : "")">
+                    <img src="@Url.Content(Model[i].ImagePath ?? "~/Content/Images/place_pics/default.png")" alt="@Model[i].Title" />
+                    <div class="carousel-caption">
+                        <h3>@Model[i].Title</h3>
+                        <p>@Html.Raw(Model[i].Content.Substring(0, Math.Min(100, Model[i].Content.Length)) + "...")</p>
+                        <a href="@Url.Action("Details", "Article", new { id = Model[i].ArticleId })" class="btn btn-primary">อ่านเพิ่มเติม</a>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Controls -->
+        <a class="left carousel-control" href="#articleCarousel" role="button" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#articleCarousel" role="button" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+
+
+
+    <!-- Section 2: รีวิว -->
+    <div class="row" style="margin-top: 30px;">
+        <h2>รีวิว</h2>
+        @foreach (var review in ViewBag.LatestReviews)
+        {
+            <div class="col-sm-6">
+                <a href="@Url.Action("ReviewDetails", "Review", new { id = review.ReviewId })">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">@review.Title</div>
+                        <div class="panel-body">
+                            <p>@Html.Raw(review.Content.Substring(0, Math.Min(100, review.Content.Length)) + "...")</p>
+                            <small>
+                                คะแนน:
+                                @for (int i = 0; i < 5; i++)
+                                {
+                                    if (i < @review.Rating)
+                                    {
+                                        <i class="fas fa-star" style="color: yellow;"></i> <!-- ดาวสีเหลือง -->
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-star" style="color: grey;"></i> <!-- ดาวสีเทา -->
+                                    }
+                                }
+                            </small>
+                            <br>
+                            <small>
+                                เขียนโดย: @review.UserName เมื่อ @review.CreatedDate.ToString("dd/MM/yyyy")
+                            </small>
+                        </div>
+                    </div>
+                </a>
+            </div>}
+    </div>
+
+    <!-- Section 3: สถานที่แนะนำ -->
+    <div class="row" style="margin-top: 30px;">
+        <h2>สถานที่แนะนำ</h2>
+        @foreach (var place in ViewBag.RecommendedPlaces)
+        {
+            // แยก URL ของภาพโดยใช้เครื่องหมายจุลภาค ถ้ามีหลายภาพ
+            var imageUrls = place.ImageUrls?.Split(','); // แยกค่า ImageUrls เป็นอาเรย์
+            var firstImageUrl = imageUrls != null && imageUrls.Length > 0 ? imageUrls[0] : "~/Content/Images/default_place.jpg"; // ใช้ภาพแรก หรือภาพ default หากไม่มี
+
+            <div class="col-sm-4">
+                <a href="@Url.Action("Details", "Location", new { id = place.LocationId })">
+                    <div class="thumbnail">
+                        <img src="@Url.Content(firstImageUrl)" alt="@place.Name" style="width: 100%; height: 200px; object-fit: cover;">
+                        <div class="caption">
+                            <h3>@place.Name</h3>
+                            <p>@place.Description.Substring(0, Math.Min(40, place.Description.Length))...</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+
+</div>

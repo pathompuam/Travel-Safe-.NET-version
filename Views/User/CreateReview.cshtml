@@ -1,0 +1,75 @@
+﻿@model Travel_Safe.Models.Review
+
+@{ ViewBag.Title = "Create Review"; }
+
+<br>
+<br>
+
+<div class="container" style="margin-top: 30px;">
+    <h2 class="text-center">สร้างรีวิว</h2>
+    <hr>
+    @using (Html.BeginForm("CreateReview", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>เลือกสถานที่</label>
+                    @Html.DropDownListFor(m => m.LocationId, (SelectList)ViewBag.Locations, "Select Location", new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>หัวข้อ</label>
+                    @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Content, new { @class = "control-label" })
+            @Html.TextAreaFor(m => m.Content, new { @class = "form-control", rows = 5 })
+        </div>
+
+        <div class="form-group">
+            <label>อัพโหลดรูปภาพ</label>
+            <input type="file" name="images" multiple class="form-control" />
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>ความปลอดภัยด้านอาชญากรรม</label>
+                    @Html.TextBoxFor(m => m.SafetyType, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>ความปลอดภัยด้านสภาพแวดล้อม</label>
+                    @Html.TextBoxFor(m => m.SafetyType2, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>ความปลอดภัยด้านสุขภาพ</label>
+                    @Html.TextBoxFor(m => m.SafetyType3, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.AdditionalTips, new { @class = "control-label" })
+            @Html.TextAreaFor(m => m.AdditionalTips, new { @class = "form-control", rows = 3 })
+        </div>
+
+        <div class="form-group">
+            <label for="Rating" class="control-label">คะแนน (1-5 ดาว)</label>
+            @Html.DropDownListFor(m => m.Rating, new SelectList(Enumerable.Range(1, 5)), "เลือกคะแนน", new { @class = "form-control" })
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+    }
+</div>

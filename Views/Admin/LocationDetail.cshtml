@@ -1,0 +1,58 @@
+﻿@model Travel_Safe.Models.Location
+
+@{
+    ViewBag.Title = "Location Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h2 class="text-center">@Model.Name</h2>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">ข้อมูลสถานที่ของ @Model.Name</h3>
+        </div>
+        <div class="panel-body">
+            <dl class="row">
+                <dt class="col-sm-3">ที่อยู่</dt>
+                <dd class="col-sm-9">@Model.Address</dd>
+
+                <dt class="col-sm-3">เวลาเปิด-ปิด</dt>
+                <dd class="col-sm-9">@Model.OpeningHours</dd>
+
+                <dt class="col-sm-3">ค่าเข้า</dt>
+                <dd class="col-sm-9">@Model.EntryFee</dd>
+
+                <dt class="col-sm-3">ช่องทางการติดต่อ</dt>
+                <dd class="col-sm-9">@Model.Contact</dd>
+
+                <dt class="col-sm-3">อธิบาย</dt>
+                <dd class="col-sm-9">@Model.Description</dd>
+
+                <dt class="col-sm-3">รูปภาพ</dt>
+                <dd class="col-sm-9">
+                    <div class="row">
+                        @foreach (var imageUrl in Model.ImageUrls.Split(','))
+                        {
+                            <div class="col-xs-6 col-sm-4 col-md-3">
+                                <img src="@imageUrl" alt="Image" class="img-thumbnail" style="max-width: 100%; max-height: 200px;" />
+                            </div>
+                        }
+                    </div>
+                </dd>
+
+                <dt class="col-sm-3">วันที่สร้าง</dt>
+                <dd class="col-sm-9">@Model.CreatedDate</dd>
+
+                <dt class="col-sm-3">วันที่อัพเดทล่าสุด</dt>
+                <dd class="col-sm-9">@Model.UpdatedDate</dd>
+
+                <dt class="col-sm-3">id ผู้สร้าง</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.CreatorId)</dd>
+            </dl>
+            <div class="panel-footer text-right">
+                <a href="@Url.Action("EditLocation", "Admin", new { id = Model.LocationId })" class="btn btn-warning btn-sm">Edit</a>
+                <a href="@Url.Action("DeleteLocation", "Admin", new { id = Model.LocationId })" class="btn btn-danger btn-sm">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>

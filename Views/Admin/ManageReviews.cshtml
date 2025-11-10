@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Travel_Safe.Models.Review>
+@{
+    ViewBag.Title = "จัดการรีวิว";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>จัดการรีวิว</h2>
+
+<!-- Search Form -->
+<div class="well">
+    <form method="get" action="@Url.Action("ManageReviews", "Admin")" class="form-inline">
+        <div class="form-group">
+            <input type="text" name="search" placeholder="ค้นหาด้วยชื่อหรือเนื้อหา" class="form-control" />
+        </div>
+        <button type="submit" class="btn" style="background-color: #829d80; color: white;">ค้นหา</button>
+    </form>
+</div>
+
+<!-- Reviews Table -->
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>ชื่อรีวิว</th>
+            <th>สถานที่</th>
+            <th>เขียนโดย</th>
+            <th>วันที่สร้าง</th>
+            <th>การจัดการ</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var review in Model)
+        {
+            <tr>
+                <td>@review.Title</td>
+                <td>@review.Location.Name</td>
+                <td>@review.UserName</td>
+                <td>@review.CreatedDate.ToString("dd/MM/yyyy")</td>
+                <td>
+                    <a href="@Url.Action("ReviewDetail", "Admin", new { id = review.ReviewId })" class="btn btn-info btn-sm">ดู</a>
+                    <a href="@Url.Action("EditReview", "Admin", new { id = review.ReviewId })" class="btn btn-warning btn-sm">แก้ไข</a>
+                    <form action="@Url.Action("DeleteReview", "Admin", new { id = review.ReviewId })" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('คุณต้องการลบรีวิวนี้หรือไม่?')">ลบ</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

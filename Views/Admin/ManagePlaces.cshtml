@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Travel_Safe.Models.Location>
+
+@{
+    ViewBag.Title = "จัดการสถานที่";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>จัดการสถานที่</h2>
+
+<!-- Search Form -->
+<div class="well">
+    <form method="get" action="@Url.Action("ManagePlaces", "Admin")" class="form-inline">
+        <div class="form-group">
+            <input type="text" name="search" placeholder="ค้นหาด้วยชื่อสถานที่" class="form-control" />
+        </div>
+        <button type="submit" class="btn" style="background-color: #829d80; color: white;">ค้นหา</button>
+    </form>
+</div>
+
+<!-- Locations Table -->
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>ชื่อสถานที่</th>
+            <th>ที่อยู่</th>
+            <th>สร้างโดย</th>
+            <th>วันที่สร้าง</th>
+            <th>การจัดการ</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var place in Model)
+        {
+            <tr>
+                <td>@place.Name</td>
+                <td>@place.Address</td>
+                <td>@place.Creator.UserName</td>
+                <td>@place.CreatedDate.ToString("dd/MM/yyyy")</td>
+                <td>
+                    <a href="@Url.Action("LocationDetail", "Admin", new { id = place.LocationId })" class="btn btn-info btn-sm">ดู</a>
+                    <a href="@Url.Action("EditLocation", "Admin", new { id = place.LocationId })" class="btn btn-warning btn-sm">แก้ไข</a>
+                    <form action="@Url.Action("DeleteLocation", "Admin", new { id = place.LocationId })" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('คุณต้องการลบสถานที่นี้หรือไม่?')">ลบ</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
